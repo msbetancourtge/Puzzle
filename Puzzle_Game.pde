@@ -1,80 +1,56 @@
-int X, Y, n, m, a, b;
-int N;
-Piece[][] piezas;
-PImage img;
-int ss = 60; 
-int se = ss+5;
-
-void crearP(PImage img, String name) {
-
-  //background(img);
-  Y=0;
-  n = img.width/ss;
-  m = img.height/ss;
-  piezas = new Piece[m][n];
-  PVector[][] matrizP = new PVector[m][n];
-  
-  for (int i = 0; i<m; i++) {
-    X=0;
-    for (int j = 0; j<n; j++) {
-      matrizP[i][j]= new PVector(X, Y);
-      //println();
-      //print(X, Y, img.width/ss, img.height/ss);
-      piezas[i][j] = new Piece(img.get(X, Y, ss, ss), 60);
-      //image(piezas[i][j], 0, 0);
-      //piezas[i][j].save("Data/" + name + "/pieza" + str(N) + ".png");
-      X=X+ss;
-      N++;
-    }
-    Y=Y+ss;
-  }
-}
+Puzzle[] levels;
+int total, current;
+//PImage img;
+//Piece[][] piezas;
+int ss = 95; 
+int se = ss+4;
+String state;
 
 void setup() {
 
   size(1200, 750);
+  frameRate(30);
+  String[] names = new String[4];
+  names[0] = "Data/test1.png";
+  names[1] = "Data/test2.png";
+  names[2] = "Data/test3.png";
+  names[3] = "Data/test4.png";
   
-  String[] names = new String[3];
+  
+  total = names.length;
+  levels = new Puzzle[total];
+  for (int i = 0; i < levels.length; i++){
+    String temp = names[i];
+    levels[i] = new Puzzle(temp);
+  }
+}
 
-  names[0] = "test1";
-  names[1] = "test3";
-  names[2] = "test3";
 
-  //for (int i=0; i<names.length; i++) {
-  //for (int i=0; i<1; i++) {
-  String load = names[1] + ".png";
-  //println(load, names[i]);
-  N=0;
-  img = loadImage(load);
-  a = img.width/2;
-  b = img.height/2;
-  crearP(img, names[1]);
-//}
-} 
 
 
 void draw() {
+ 
 
-  background(40);
-  img.resize(a, b);
-  image(img, 20, 20);
-
-  for (int i=0; i<m; i++) {
-    for (int j=0; j<n/2; j++) {
-      PImage temp = piezas[i][j].imagge();
-      piezas[i][j].display(temp, 350 + se*i, 20 + se*j);
-      //image(piezas[i][j], 350 + se*i, 20 + se*j);
-    }
-    for (int j=n/2; j<n; j++) {
-      PImage temp = piezas[i][j].imagge();
-      piezas[i][j].display(temp, (m*se)+ 350 + se*i, 20 + se*(j-(n/2)));
-      //image(piezas[i][j], (m*se)+ 350 + se*i, 20 + se*(j-(n/2)));
-    }
+  
+  menu();
+  
+  if(state == "Puzzle"){
+    playPuzzle();
   }
+}
 
-  for (int i=0; i<m; i++) {
-    for (int j=0; j<n; j++) {
-      rect( 350 + (ss * j), ((n/2)*se)+ 35 + (ss * i), ss, ss);
-    }
-  }
+void menu(){
+  
+  background(255);
+  Button puzzle = new Button("Jugar", 500, 400);
+  puzzle.display();
+  if(puzzle.clicked())
+  state="Puzzle";
+}
+
+void playPuzzle(){
+    levels[current].display();
+  levels[current].update();
+  if(levels[current].sig.clicked())
+  current = current < total-1 ? current+1 : 0;
 }
